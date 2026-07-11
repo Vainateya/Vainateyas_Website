@@ -407,13 +407,30 @@
     </div>`;
   }
 
+  // ---------- MAINTENANCE placeholder ----------
+  // Shown when status.json says {"online": false}. Flip that file to take the
+  // whole site to a clean "under construction" page — no code changes needed.
+  function renderMaintenance() {
+    const nav = document.getElementById("nav"); if (nav) nav.remove();
+    const foot = document.getElementById("footer"); if (foot) foot.remove();
+    const main = document.getElementById("main");
+    main.innerHTML = `
+    <div style="min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px;">
+      <span class="monogram" style="width:56px; height:56px; font-size:22px; margin-bottom:28px;">${esc(S.monogram)}</span>
+      <div style="font-size:32px; font-weight:500; letter-spacing:-0.01em;">${esc(S.name)}</div>
+      <div class="eyebrow" style="margin-top:18px; margin-bottom:0;">Site under construction</div>
+      <div style="font-size:16px; line-height:1.7; color:var(--text-secondary); max-width:420px; margin-top:18px;">A refreshed version is on the way — please check back soon.</div>
+    </div>`;
+    document.title = esc(S.name);
+  }
+
   // ---------- boot ----------
   const RENDERERS = {
     about: renderAbout, research: renderResearch, experience: renderExperience,
     writing: renderWriting, reading: renderReading, community: renderCommunity,
     contact: renderContact
   };
-  document.addEventListener("DOMContentLoaded", () => {
+  function renderSite() {
     const page = document.body.dataset.page;
     const label = { about: "About", research: "Research", experience: "Experience", writing: "Writing", reading: "Reading", community: "Community", contact: "Contact" }[page];
     document.getElementById("nav").outerHTML = renderNav(label);
@@ -421,5 +438,18 @@
     const main = document.getElementById("main");
     (RENDERERS[page] || (() => {}))(main);
     document.title = `${label} · ${S.name}`;
+  }
+  document.addEventListener("DOMContentLoaded", async () => {
+    // Kill switch: fetch status.json fresh (never cached). Fail-open — if it
+    // can't be read (only happens if the site itself is down), show the site.
+    let online = true;
+    try {
+      const res = await fetch("status.json?t=" + Date.now(), { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.online === false) online = false;
+      }
+    } catch (e) { /* fail-open */ }
+    if (online) renderSite(); else renderMaintenance();
   });
 })();
