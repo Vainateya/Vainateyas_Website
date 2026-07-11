@@ -121,6 +121,16 @@ img { max-width: 100%; display: block; }
 .rule-row { border-top: 1px solid var(--rule); }
 .links-row { display: flex; gap: 18px; font-family: var(--font-sans); font-size: 12px; }
 
+/* ===== Social icons (Contact) ===== */
+.social-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 54px; height: 54px;
+  border: 1px solid var(--border); background: var(--surface-card);
+  color: var(--text-secondary); transition: color .15s ease, border-color .15s ease, background .15s ease;
+}
+.social-icon:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-tint); }
+.social-icon svg { width: 26px; height: 26px; fill: currentColor; display: block; }
+
 /* ===== Forms ===== */
 input[type="text"], textarea {
   width: 100%; font-family: var(--font-serif); font-size: 15px; line-height: 1.6;

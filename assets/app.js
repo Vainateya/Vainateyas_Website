@@ -13,7 +13,8 @@
     ["experience.html", "Experience"],
     ["writing.html", "Writing"],
     ["reading.html", "Reading"],
-    ["community.html", "Community"]
+    ["community.html", "Community"],
+    ["contact.html", "Contact"]
   ];
 
   // ---------- shared chrome ----------
@@ -27,7 +28,6 @@
         <span class="wordmark-name">${esc(S.name)}</span>
       </a>
       <div class="nav-links">${links}
-        <a class="btn small" href="${esc(S.calendarUrl)}" target="_blank" rel="noopener">Book a time</a>
       </div>
     </div></nav>`;
   }
@@ -62,8 +62,6 @@
   function renderAbout(el) {
     const A = window.ABOUT;
     const dotColor = { accent: "var(--accent)", mark: "var(--mark)", ink: "var(--ink)" };
-    const socials = (S.socials || []).map(s =>
-      `<a href="${esc(s.url)}" target="_blank" rel="noopener" style="color:var(--text-secondary);">${esc(s.label)}</a>`).join("");
 
     el.innerHTML = `
     <div class="wrap hero" style="display:flex; gap:64px; align-items:center; padding-top:92px; padding-bottom:76px;">
@@ -74,7 +72,7 @@
         <div style="font-size:17px; line-height:1.7; color:var(--text-secondary); margin-top:20px; max-width:540px;">${esc(A.lead)}</div>
         <div style="display:flex; align-items:center; gap:16px; margin-top:32px;">
           <a class="btn" href="research.html">Read the work</a>
-          <a class="btn ghost" href="#contact">Book a conversation</a>
+          <a class="btn ghost" href="contact.html">Book a conversation</a>
         </div>
       </div>
       <div style="flex:1; display:flex; justify-content:center;">
@@ -116,39 +114,7 @@
           <div style="font-size:15px; line-height:1.6;">${esc(g.text)}</div>
         </div>`).join("")}
       </div>
-    </div>
-
-    <div id="contact" style="border-top:1px solid var(--border); background:var(--surface-card); scroll-margin-top:72px;">
-      <div class="wrap" style="padding-top:76px; padding-bottom:76px;">
-        <div style="font-size:38px; font-weight:500; margin-bottom:8px;">Let's talk.</div>
-        <div style="font-size:17px; line-height:1.7; color:var(--text-secondary); max-width:520px; margin-bottom:44px;">Whether you're a collaborator, a funder, or just curious — I'd genuinely like to hear from you.</div>
-        <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:32px;">
-          <div style="border:1px solid var(--border); padding:34px 36px; background:var(--bg-page);">
-            <div class="eyebrow" style="font-size:11px; margin-bottom:14px;">Set up a meeting</div>
-            <div style="font-size:20px; font-weight:500; margin-bottom:10px;">Book a conversation</div>
-            <div style="font-size:13px; line-height:1.7; color:var(--text-secondary); margin-bottom:24px;">Grab 30 minutes on my calendar. Short intros welcome; no agenda required.</div>
-            <a class="btn" href="${esc(S.calendarUrl)}" target="_blank" rel="noopener">Open calendar →</a>
-          </div>
-          <div style="border:1px solid var(--border); padding:34px 36px; background:var(--bg-page);">
-            <div class="eyebrow" style="font-size:11px; margin-bottom:14px;">Leave a note</div>
-            <div style="font-size:20px; font-weight:500; margin-bottom:10px;">Quick feedback</div>
-            <textarea id="fb-text" placeholder="Say something honest…" style="height:84px; resize:vertical;"></textarea>
-            <button class="btn" id="fb-send" style="margin-top:14px; padding:12px 22px;">Send</button>
-            <div class="meta" style="margin-top:12px;">opens your mail app — a backend can replace this later</div>
-          </div>
-        </div>
-        <div style="display:flex; flex-wrap:wrap; gap:30px; margin-top:36px; font-family:var(--font-sans); font-size:13px;">
-          <a href="mailto:${esc(S.email)}">${esc(S.email)}</a>${socials}
-        </div>
-      </div>
     </div>`;
-
-    const btn = el.querySelector("#fb-send");
-    btn.addEventListener("click", () => {
-      const t = el.querySelector("#fb-text").value.trim();
-      if (!t) return;
-      location.href = `mailto:${S.email}?subject=${encodeURIComponent("Note from " + S.domain)}&body=${encodeURIComponent(t)}`;
-    });
   }
 
   // ---------- RESEARCH ----------
@@ -388,14 +354,68 @@
     </div>`;
   }
 
+  // ---------- CONTACT ----------
+  function renderContact(el) {
+    const C = window.CONTACT || {};
+    const connect = C.connect || {};
+    const feedback = C.feedback || {};
+
+    // Inline icons (24×24, fill:currentColor so they inherit hover color).
+    const ICONS = {
+      scholar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg>',
+      github: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.898-.014 3.293 0 .322.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>',
+      linkedin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>',
+      email: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>'
+    };
+
+    const socialIcons = (S.socials || []).map(s => {
+      const svg = ICONS[s.icon] || "";
+      const ext = s.icon === "email" ? "" : ' target="_blank" rel="noopener"';
+      return `<a class="social-icon" href="${esc(s.url)}"${ext} aria-label="${esc(s.label)}" title="${esc(s.label)}">${svg}</a>`;
+    }).join("");
+
+    const fbUrl = S.feedbackFormUrl || "";
+    const fbAction = fbUrl
+      ? `<a class="btn" href="${esc(fbUrl)}" target="_blank" rel="noopener">feedback</a>`
+      : `<div class="meta" style="line-height:1.7;">Feedback form not linked yet — add your Google Form link as <span class="k">feedbackFormUrl</span> in content/site.js.</div>`;
+
+    el.innerHTML = `
+    <div class="wrap page-head">
+      <div class="eyebrow">Contact</div>
+      <h1 class="page-title" style="margin:0;">Get in touch.</h1>
+      <div class="page-lead">A few ways to reach me — pick whichever fits.</div>
+    </div>
+    <div class="wrap" style="padding-bottom:72px;">
+      <div class="grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:32px;">
+        <div style="border:1px solid var(--border); padding:36px 38px; background:var(--surface-card);">
+          <div class="eyebrow" style="font-size:11px; margin-bottom:14px;">Set up a meeting</div>
+          <div style="font-size:22px; font-weight:500; margin-bottom:12px;">${esc(connect.title)}</div>
+          <div style="font-size:15px; line-height:1.75; color:var(--text-secondary); margin-bottom:28px;">${esc(connect.text)}</div>
+          <a class="btn" href="${esc(S.calendarUrl)}" target="_blank" rel="noopener">calendar</a>
+        </div>
+        <div style="border:1px solid var(--border); padding:36px 38px; background:var(--surface-card);">
+          <div class="eyebrow" style="font-size:11px; margin-bottom:14px;">No name needed</div>
+          <div style="font-size:22px; font-weight:500; margin-bottom:12px;">${esc(feedback.title)}</div>
+          <div style="font-size:15px; line-height:1.75; color:var(--text-secondary); margin-bottom:28px;">${esc(feedback.text)}</div>
+          ${fbAction}
+        </div>
+      </div>
+      <div style="margin-top:56px; border-top:1px solid var(--rule); padding-top:40px;">
+        <div class="eyebrow" style="margin-bottom:22px;">Find me elsewhere</div>
+        <div style="display:flex; gap:18px; flex-wrap:wrap;">${socialIcons}</div>
+      </div>
+    </div>`;
+  }
+
   // ---------- boot ----------
   const RENDERERS = {
     about: renderAbout, research: renderResearch, experience: renderExperience,
-    writing: renderWriting, reading: renderReading, community: renderCommunity
+    writing: renderWriting, reading: renderReading, community: renderCommunity,
+    contact: renderContact
   };
   document.addEventListener("DOMContentLoaded", () => {
     const page = document.body.dataset.page;
-    const label = { about: "About", research: "Research", experience: "Experience", writing: "Writing", reading: "Reading", community: "Community" }[page];
+    const label = { about: "About", research: "Research", experience: "Experience", writing: "Writing", reading: "Reading", community: "Community", contact: "Contact" }[page];
     document.getElementById("nav").outerHTML = renderNav(label);
     document.getElementById("footer").outerHTML = renderFooter();
     const main = document.getElementById("main");
